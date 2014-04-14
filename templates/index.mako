@@ -22,49 +22,21 @@
   </div>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="SidebarController">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Containers</a></li>
-            <li><a href="#">Images</a></li>
+            <li ng-class="{active: sidebarSelected == '/static/partials/containers.html'}"><a href="javascript:void(0);" ng-click="sidebarSelected = '/static/partials/containers.html'">Containers</a></li>
+            <li ng-class="{active: sidebarSelected == '/static/partials/images.html'}"><a href="javascript:void(0);" ng-click="sidebarSelected = '/static/partials/images.html'">Images</a></li>
           </ul>
         </div>
       </div>
 
+
+
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h1 class="page-header" style="color: ${statusColour}">Status: ${status}</h1>
-            <div class="table-responsive" ng-controller="ContainerController">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Image</th>
-                      <th>Command</th>
-                      <th>Created</th>
-                      <th>Status</th>
-                      <th>Ports</th>
-                      <th>Names</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="container in containers">
-                      <td>{{ container.Id }}</td>
-                      <td>{{ container.Image }}</td>
-                      <td>{{ container.Command }}</td>
-                      <td>{{ container.Created }}</td>
-                      <td>{{ container.Status }}</td>
-                      <td>
-                          <p ng-repeat="portBinding in container.Ports">{{ getStringForBinding(portBinding) }}</p>
-                      </td>
-                      <td>
-                          <p ng-repeat="name in container.Names">{{ name }}</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-        </div>
+          <h1 class="page-header" style="color: {{ dockerColour }}">Status: {{ dockerStatus }}</h1>
+          <div ng-include="sidebarSelected"></div>
       </div>
 </body>
 </html>

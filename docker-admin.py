@@ -21,6 +21,28 @@ def getContainers(client, all=False):
     return containers
 
 
+@app.route('/images')
+def images():
+    client = docker.Client()
+    images = []
+
+    try:
+        currentImages = client.images()
+        for image in currentImages:
+            betterImage = {}
+            betterImage['Repositories'] = list(set([repo.split(':')[0] for repo in image['RepoTags']]))
+            betterImage['Tags'] = [repo.split(':')[1] for repo in image['RepoTags']]
+            betterImage['Image'] = image['Id'][:12]
+            betterImage['Created'] = datetime.datetime.fromtimestamp(image['Created']).strftime("%Y-%m-%d %H:%M:%S")
+            betterImage['Size'] = "{0:.1f} MB".format(image['VirtualSize'] / 1000.0 / 1000.0)
+            images.append(betterImage)
+    except Exception:
+        pass
+
+    images = {"images": images}
+    return jsonify(images)
+
+
 @app.route('/containers')
 def containers():
     client = docker.Client()
@@ -33,15 +55,19 @@ def containers():
     return jsonify(containers)
 
 
-@app.route('/')
-def index():
+@app.route('/status')
+def status():
     client = docker.Client()
     containers = getContainers(client, all=True)
 
     status = "Running" if containers else "Stopped"
     statusColour = "green" if containers else "red"
 
-    return render_template('index.mako', status=status, statusColour=statusColour)
+    return jsonify({"status": status, "colour": statusColour})
+
+@app.route('/')
+def index():
+    return render_template('index.mako')
 
 
 if __name__ == '__main__':
