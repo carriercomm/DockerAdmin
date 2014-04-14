@@ -9,10 +9,8 @@ angular.module('docker-sidebar', []).controller('SidebarController', function($s
            $scope.dockerColour = data.colour;
        });
 
-       pollTimeout = $timeout($scope.onPollTimeout, $scope.pollingInterval);
+       $timeout($scope.onPollTimeout, $scope.pollingInterval);
     };
-
-    var pollTimeout = $timeout($scope.onPollTimeout, $scope.pollingInterval);
 
     $scope.onPollTimeout();
 });
@@ -30,10 +28,8 @@ angular.module('docker-containers', []).controller('ContainerController', functi
            $scope.containers = data.containers;
        });
 
-       pollTimeout = $timeout($scope.onPollTimeout, $scope.pollingInterval);
+       $timeout($scope.onPollTimeout, $scope.pollingInterval);
     };
-
-    var pollTimeout = $timeout($scope.onPollTimeout, $scope.pollingInterval);
 
     $scope.onPollTimeout();
 });

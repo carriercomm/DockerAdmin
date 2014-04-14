@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from flask.ext.mako import MakoTemplates, render_template
 
-from .utils import getContainers, getImages, isDockerRunning
+from utils import getContainers, getImages, isDockerRunning
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
