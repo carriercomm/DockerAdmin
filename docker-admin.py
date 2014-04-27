@@ -1,13 +1,31 @@
+import threading
+
 from flask import Flask, jsonify
 from flask.ext.mako import MakoTemplates, render_template
+from flask.ext.socketio import SocketIO
 
-from utils import getContainers, getImages, isDockerRunning
+from utils import getContainers, getImages, isDockerRunning, dockerBuildThread
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.template_folder = "templates"
 
 mako = MakoTemplates(app)
+socketio = SocketIO(app)
+
+
+@socketio.on('connected')
+def connected(event):
+    print("DockerAdmin connected")
+
+
+@socketio.on('build')
+def build(buildOptions):
+    """ Build a new docker image
+    """
+    print("Starting build")
+    threading.Thread(target=dockerBuildThread, args=(buildOptions, socketio)).start()
+    print("Build running")
 
 
 @app.route('/images')
@@ -44,6 +62,6 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
 
 

@@ -1,3 +1,4 @@
+import json
 import docker
 import datetime
 
@@ -46,6 +47,29 @@ def getImages():
         pass
 
     return images
+
+
+def dockerBuildThread(buildOptions, socketio):
+
+    dockerDirectory = buildOptions['dir']
+    tag = buildOptions['tag']
+    quiet = buildOptions['quiet']
+    nocache = buildOptions['nocache']
+    rm = buildOptions['rm']
+
+    client = docker.Client()
+    buildLog = client.build(path=dockerDirectory,
+                            tag=tag,
+                            nocache=nocache,
+                            rm=rm,
+                            quiet=quiet,
+                            stream=True)
+
+    for line in buildLog:
+        line = json.loads(line)['stream']
+        socketio.emit('log', {"log": line})
+
+    socketio.emit('log', {"log": "\nBuild finished."})
 
 
 def isDockerRunning():

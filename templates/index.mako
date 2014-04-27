@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="static/css/bootstrap.css"  type="text/css"/>
     <link href="static/css/admin.css" rel="stylesheet">
 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+
     <script src="static/js/jquery-1.11.0.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
 
@@ -26,17 +28,21 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li ng-class="{active: sidebarSelected == '/static/partials/containers.html'}"><a href="javascript:void(0);" ng-click="sidebarSelected = '/static/partials/containers.html'">Containers</a></li>
-            <li ng-class="{active: sidebarSelected == '/static/partials/images.html'}"><a href="javascript:void(0);" ng-click="sidebarSelected = '/static/partials/images.html'">Images</a></li>
+            <li ng-repeat="sidebar in sidebars"><a href="javascript:void(0);" ng-click="sidebar.visible = !sidebar.visible">{{sidebar.name}}</a>
+                <ul class="nav nav-sidebar" ng-if="sidebar.visible" style="padding-left: 40px;">
+                    <li ng-repeat="option in sidebar.options" ng-class="{active: selectedOption == option}">
+                        <a href="javascript:void(0);" ng-click="setSelectedOption(option)">{{option.name}}</a>
+                    </li>
+                </ul>
+            </li>
           </ul>
         </div>
       </div>
 
-
-
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header" style="color: {{ dockerColour }}">Status: {{ dockerStatus }}</h1>
-          <div ng-include="sidebarSelected"></div>
+          <div ng-include="selectedOption.url"></div>
       </div>
+</div>
 </body>
 </html>
